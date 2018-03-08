@@ -171,7 +171,7 @@ class Ogone
             ]
         ];
 
-        return $paymentData[$key];
+        return $paymentData[$this->paymentMethod][$key];
     }
 
     public function setPaymentMethod($method) {
