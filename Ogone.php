@@ -80,7 +80,7 @@ class Ogone
 
     protected function generateData() {
 
-        $inputs = [
+        $this->inputs = [
             'PSPID'         => $this->pspid,
             'CURRENCY'      => 'EUR',
             'LANGUAGE'      => \LaravelLocalization::getCurrentLocale(),
@@ -102,7 +102,7 @@ class Ogone
         ];
 
         if($this->isReccurent && !empty($this->period)) {
-            $inputs = $inputs + [
+            $this->inputs = $this->inputs + [
 
                     'SUBSCRIPTION_ID'   => 'RECCURENT-'.$this->orderId,
                     'SUB_ORDERID'       => 'RECCURENT-'.$this->orderId,
@@ -116,19 +116,35 @@ class Ogone
                 ];
         }
 
+        $this->inputs['SHASIGN'] = $this->calculateSha();
 
+        return $this;
+    }
+
+    public function checkShaIn($data = array()) {
+
+        $shaIn = $data['SHASIGN'];
+        unset($data['SHASIGN']);
+        $this->inputs = $data;
+        $sha = strtoupper($this->calculateSha());
+
+        return ($shaIn == $sha);
+    }
+
+    protected function calculateSha() {
+        $inputCopy = [];
+        $inputs = $this->inputs;
         ksort($inputs);
+        $inputs = array_change_key_case($inputs, CASE_UPPER);
 
         foreach($inputs as $k=>$value) {
-            if(isset($value) && $value !== null && $value !== '') {
-                $this->inputs[] = strtoupper($k).'='.$value;
+            if(isset($value) && !is_null($value) && !empty($value)) {
+                $inputCopy[] = strtoupper($k).'='.$value;
             }
         }
 
-        $toSha = implode($this->shaIn, $this->inputs) . $this->shaIn;
-        $this->inputs['SHASIGN'] = sha1($toSha);
-
-        return $this;
+        $toSha = implode($this->shaIn, $inputCopy) . $this->shaOut;
+        return sha1($toSha);
     }
 
     public function getPaymentMethods() {

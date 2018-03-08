@@ -36,7 +36,28 @@ class OgoneController extends Controller
     }
 
     public function callback(Request $request) {
-        //TODO
+
+        /**
+         * In case of recurrent payement, the only way to know is to check if the PAYID already exists (matching with a DB)
+         *
+         *
+         */
+
+        $ogone = new Ogone();
+
+        if($ogone->checkShaIn( $request->all())) {
+
+            $orderId = $request->get('orderID');
+            $payId = $request->get('PAYID');
+            $status = $request->get('STATUS');
+
+            if (!in_array($status, [5, 9])) {
+                die('ERROR');
+            }
+
+        }
+
+        die('ERROR INVALID SHASIGN');
     }
 
 
