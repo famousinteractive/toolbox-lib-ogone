@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Libraries\Famous\Ogone\Ogone;
+use App\Libraries\Famous\Ogone\Mollie;
 use Illuminate\Http\Request;
 
 class OgoneController extends Controller
@@ -12,10 +12,10 @@ class OgoneController extends Controller
     public function redirectToOgone(Request $request) {
 
         try {
-            $ogone = new Ogone();
+            $ogone = new Mollie();
             $ogone->setAmount(10)
                 ->setOrderId(uniqid())
-                ->setPaymentMethod(Ogone::PAYMENT_METHOD_VISA)
+                ->setPaymentMethod(Mollie::PAYMENT_METHOD_VISA)
                 ->setUserEmail('user@email.com')
                 ->setUserFullName('Jean dupont');
 
@@ -43,7 +43,7 @@ class OgoneController extends Controller
          *
          */
 
-        $ogone = new Ogone();
+        $ogone = new Mollie();
 
         if($ogone->checkShaIn( $request->all())) {
 

@@ -1,5 +1,5 @@
 <?php
-namespace App\Libraries\Famous\Ogone;
+namespace App\Libraries\Ogone;
 
 
 use Carbon\Carbon;
